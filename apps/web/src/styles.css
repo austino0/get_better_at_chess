@@ -1,0 +1,78 @@
+:root {
+  color-scheme: light dark;
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
+}
+
+body {
+  margin: 0;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+}
+
+.app h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.app header p {
+  margin: 4px 0 0;
+  text-align: center;
+  opacity: 0.7;
+}
+
+.board-wrap {
+  position: relative;
+}
+
+.board {
+  /* Taille de l'échiquier : la plus petite dimension disponible, plafonnée à 640 px. */
+  width: min(92vw, 70vh, 640px);
+  height: min(92vw, 70vh, 640px);
+}
+
+.status {
+  margin: 0;
+  font-weight: 600;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+button {
+  font: inherit;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid #8884;
+  cursor: pointer;
+}
+
+.promotion {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #000a;
+  color: #fff;
+}
+
+.promotion p {
+  margin: 0;
+  font-weight: 600;
+}

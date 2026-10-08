@@ -9,5 +9,21 @@
     "review": "Review",
     "games": "Games",
     "settings": "Settings"
+  },
+  "board": {
+    "turnWhite": "White to move",
+    "turnBlack": "Black to move",
+    "check": "Check!",
+    "checkmateWhite": "Checkmate: White wins",
+    "checkmateBlack": "Checkmate: Black wins",
+    "stalemate": "Stalemate: draw",
+    "insufficientMaterial": "Insufficient material: draw",
+    "newGame": "New game",
+    "flip": "Flip board",
+    "promoteTitle": "Promote to…",
+    "queen": "Queen",
+    "rook": "Rook",
+    "bishop": "Bishop",
+    "knight": "Knight"
   }
 }

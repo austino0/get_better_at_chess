@@ -9,5 +9,21 @@
     "review": "Révisions",
     "games": "Parties",
     "settings": "Réglages"
+  },
+  "board": {
+    "turnWhite": "Aux blancs de jouer",
+    "turnBlack": "Aux noirs de jouer",
+    "check": "Échec !",
+    "checkmateWhite": "Échec et mat : les blancs gagnent",
+    "checkmateBlack": "Échec et mat : les noirs gagnent",
+    "stalemate": "Pat : partie nulle",
+    "insufficientMaterial": "Matériel insuffisant : partie nulle",
+    "newGame": "Nouvelle partie",
+    "flip": "Retourner l'échiquier",
+    "promoteTitle": "Promouvoir en…",
+    "queen": "Dame",
+    "rook": "Tour",
+    "bishop": "Fou",
+    "knight": "Cavalier"
   }
 }

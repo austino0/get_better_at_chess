@@ -9,6 +9,27 @@ export type Locale = 'fr' | 'en';
 export const messages: Record<Locale, Messages> = { fr, en };
 export const defaultLocale: Locale = 'fr';
 
+type Paths<T> = {
+  [K in keyof T & string]: T[K] extends string ? K : `${K}.${Paths<T[K]>}`;
+}[keyof T & string];
+
+/** Clé de traduction valide (`nav.home`, `board.check`, …) : une faute de frappe ne compile pas. */
+export type MessageKey = Paths<Messages>;
+
+/** Texte traduit ; retombe sur le français si la langue n'a pas la clé. */
+export function translate(locale: Locale, key: MessageKey): string {
+  return lookup(messages[locale], key) ?? lookup(messages[defaultLocale], key) ?? key;
+}
+
+function lookup(tree: Tree, key: string): string | undefined {
+  let node: string | Tree | undefined = tree;
+  for (const part of key.split('.')) {
+    if (typeof node !== 'object') return undefined;
+    node = node[part];
+  }
+  return typeof node === 'string' ? node : undefined;
+}
+
 interface Tree {
   [key: string]: string | Tree;
 }

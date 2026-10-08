@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 import { describe, expect, it } from 'vitest';
-import { defaultLocale, flattenKeys, messages } from './index';
+import { defaultLocale, flattenKeys, messages, translate, type MessageKey } from './index';
 
 describe('catalogues de traduction', () => {
   const reference = flattenKeys(messages[defaultLocale]).sort();
@@ -13,6 +13,15 @@ describe('catalogues de traduction', () => {
     for (const catalogue of Object.values(messages)) {
       expect(JSON.stringify(catalogue)).not.toContain('""');
     }
+  });
+
+  it('traduit une clé dans la langue demandée', () => {
+    expect(translate('fr', 'board.check')).toBe('Échec !');
+    expect(translate('en', 'board.check')).toBe('Check!');
+  });
+
+  it('renvoie la clé elle-même si elle n’existe nulle part', () => {
+    expect(translate('fr', 'inconnue.cle' as MessageKey)).toBe('inconnue.cle');
   });
 
   it('aplatit les clés imbriquées', () => {
