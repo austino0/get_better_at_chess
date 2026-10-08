@@ -190,14 +190,14 @@ Windows d'abord, puis web et mobile avec le même code.
 | Langage            | TypeScript strict partout (Rust seulement pour les commandes Tauri natives si nécessaire)                                                                   |
 | UI                 | React 19 + Vite, Tailwind, composants accessibles (Radix UI), thème clair/sombre                                                                            |
 | État               | Zustand (UI) + TanStack Query (données asynchrones)                                                                                                         |
-| Plateau            | **chessground** (celui de Lichess : tactile, léger, animations)                                                                                             |
+| Plateau            | **@lichess-org/chessground** (celui de Lichess ; l'ancien paquet `chessground` est déprécié)                                                                |
 | Règles / PGN / FEN | **chessops** (parsing PGN avec commentaires/NAG/%clk, SAN, UCI, variantes)                                                                                  |
 | Moteur             | **Stockfish WASM** en Web Worker partout (version « lite » monothread, sans en-têtes COOP/COEP) ; interface `Engine` prête pour un sidecar natif plus tard  |
 | Répétition espacée | **ts-fsrs** (FSRS-6) ; optimiseur de paramètres WASM (fsrs-rs)                                                                                              |
 | Base locale        | **SQLite** : `sqlite-wasm` + OPFS (web, et WebView2 desktop) ; même schéma et même code partout. Migrations versionnées. Accès via Kysely (requêtes typées) |
 | Graphiques         | visx ou Recharts (courbes d'éval, temps, progression)                                                                                                       |
 | i18n               | i18next (fr, en)                                                                                                                                            |
-| Monorepo           | pnpm workspaces + Turborepo                                                                                                                                 |
+| Monorepo           | pnpm workspaces (Turborepo ajouté plus tard, voir ADR-0002)                                                                                                 |
 | Tests              | Vitest (unitaires), Playwright (E2E web), tests de propriétés sur la logique de chess, tests de non-régression de l'algo FSRS                               |
 | CI/CD              | GitHub Actions : lint, typecheck, tests, build Tauri Windows, signature, release                                                                            |
 | Backend (phase 5)  | Postgres managé (Supabase) ou service léger maison : auth, sync d'événements. **Optionnel** pour l'usage de base                                            |
@@ -388,7 +388,7 @@ Les tailles : S ≈ 1–2 sem., M ≈ 3–5 sem., L ≈ 6–10 sem. (1 développ
 
 ### Phase 1 — Noyau d'entraînement (L) → **Alpha interne**
 
-- Interface moteur (UCI) + sidecar Stockfish Windows + backend WASM (web).
+- Interface moteur (UCI) + Stockfish WASM (web, Windows, mobile).
 - Import du sous-ensemble de problèmes + entraîneur tactique (thèmes, rating, séries).
 - Moteur de cartes FSRS + file de révision + échecs de problèmes → cartes.
 - Import PGN (fichier / collage) + visionneuse de partie.
@@ -490,11 +490,11 @@ Les tailles : S ≈ 1–2 sem., M ≈ 3–5 sem., L ≈ 6–10 sem. (1 développ
 
 ---
 
-## 15. Prochaines actions concrètes (semaine 1)
+## 15. Prochaines actions concrètes (1, 2 et 4 faites en livraisons 1 et 2 ; 3 : `core` fait, `db` reste)
 
 1. Valider/ajuster la section 14 et rédiger ADR-001 (licence) et ADR-002 (stack).
 2. Initialiser le monorepo pnpm + Turborepo, TypeScript strict, ESLint/Prettier, Vitest, CI GitHub Actions.
 3. Créer `packages/core` (chessops, hash de position) + `packages/db` (sqlite-wasm + 1ʳᵉ migration).
 4. Créer `apps/web` (Vite + React + chessground) avec un plateau jouable, puis `apps/desktop` (Tauri 2) qui l'embarque.
 5. Script `tools/import-puzzles` : CSV Lichess → SQLite (sous-ensemble curé) avec tests sur échantillon.
-6. Spike Stockfish : lancer un sidecar sous Tauri et un Worker WASM derrière la même interface `Engine`.
+6. Spike Stockfish : lancer le Worker WASM derrière l'interface `Engine`.

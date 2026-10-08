@@ -16,6 +16,9 @@ Windows d'abord (Tauri), puis web et mobile avec le même code.
 
 Prérequis : Node.js 24+, pnpm, (Rust et les outils C++ de Visual Studio pour l'application Tauri).
 
+Sous Windows PowerShell, si `pnpm` répond que l'exécution de scripts est désactivée : utilisez `pnpm.cmd`, ou
+autorisez les scripts locaux avec `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`.
+
 ```
 pnpm install
 pnpm check      # lint, formats, en-têtes de licence, types, tests + couverture

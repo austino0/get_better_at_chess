@@ -1,6 +1,7 @@
 node_modules/
 dist/
 coverage/
+graphify-out/
 target/
 *.log
 .env
