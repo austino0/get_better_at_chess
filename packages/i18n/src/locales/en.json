@@ -6,6 +6,7 @@
     "dbError": "Local storage unavailable"
   },
   "nav": {
+    "play": "Play",
     "home": "Home",
     "tactics": "Tactics",
     "review": "Review",
@@ -34,5 +35,19 @@
     "error": "Analysis engine unavailable",
     "depth": "depth",
     "best": "best move"
+  },
+  "puzzle": {
+    "loading": "Loading puzzles…",
+    "error": "Puzzles unavailable",
+    "findWhite": "Find the best move for White",
+    "findBlack": "Find the best move for Black",
+    "correct": "Well played, keep going",
+    "wrong": "That's not it, try again",
+    "solved": "Puzzle solved!",
+    "solvedWithHelp": "Done, but with a mistake or help",
+    "hint": "Hint",
+    "reveal": "Show solution",
+    "next": "Next puzzle",
+    "level": "Puzzle level"
   }
 }

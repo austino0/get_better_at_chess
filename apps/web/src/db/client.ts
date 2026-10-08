@@ -53,14 +53,22 @@ function openBrowserDb(): Db {
   };
 }
 
-let profile: Promise<Profile> | null = null;
+let database: Promise<Db> | null = null;
 
-/** Ouvre la base, applique les migrations et renvoie le profil local (créé au premier lancement). */
-export function loadProfile(): Promise<Profile> {
-  profile ??= (async () => {
+/** Ouvre la base et applique les migrations, une seule fois par lancement. */
+export function loadDb(): Promise<Db> {
+  database ??= (async () => {
     const db = openBrowserDb();
     await migrate(db, migrations);
-    return getOrCreateProfile(db, defaultLocale);
+    return db;
   })();
+  return database;
+}
+
+let profile: Promise<Profile> | null = null;
+
+/** Renvoie le profil local (créé au premier lancement). */
+export function loadProfile(): Promise<Profile> {
+  profile ??= loadDb().then((db) => getOrCreateProfile(db, defaultLocale));
   return profile;
 }

@@ -6,6 +6,7 @@
     "dbError": "Stockage local indisponible"
   },
   "nav": {
+    "play": "Jouer",
     "home": "Accueil",
     "tactics": "Tactique",
     "review": "Révisions",
@@ -34,5 +35,19 @@
     "error": "Moteur d'analyse indisponible",
     "depth": "profondeur",
     "best": "meilleur coup"
+  },
+  "puzzle": {
+    "loading": "Chargement des problèmes…",
+    "error": "Problèmes indisponibles",
+    "findWhite": "Trouve le meilleur coup pour les blancs",
+    "findBlack": "Trouve le meilleur coup pour les noirs",
+    "correct": "Bien joué, continue",
+    "wrong": "Ce n'est pas ça, réessaie",
+    "solved": "Problème résolu !",
+    "solvedWithHelp": "Terminé, mais avec une erreur ou de l’aide",
+    "hint": "Indice",
+    "reveal": "Voir la solution",
+    "next": "Problème suivant",
+    "level": "Niveau du problème"
   }
 }

@@ -15,6 +15,7 @@
     "@gbc/db": "workspace:*",
     "@gbc/engine": "workspace:*",
     "@gbc/i18n": "workspace:*",
+    "@gbc/puzzles": "workspace:*",
     "@lichess-org/chessground": "^10.4.2",
     "@sqlite.org/sqlite-wasm": "3.53.4-build2",
     "react": "^19.3.0",

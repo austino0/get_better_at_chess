@@ -110,3 +110,18 @@ button {
   font-size: 0.9rem;
   text-align: center;
 }
+
+.tabs {
+  display: flex;
+  gap: 8px;
+}
+
+.tabs button[aria-current='page'] {
+  font-weight: 700;
+  border-color: currentcolor;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}

@@ -208,6 +208,9 @@ importers:
       '@gbc/i18n':
         specifier: workspace:*
         version: link:../../packages/i18n
+      '@gbc/puzzles':
+        specifier: workspace:*
+        version: link:../../packages/puzzles
       '@lichess-org/chessground':
         specifier: ^10.4.2
         version: 10.4.2
@@ -249,6 +252,19 @@ importers:
   packages/engine: {}
 
   packages/i18n: {}
+
+  packages/puzzles:
+    dependencies:
+      '@gbc/core':
+        specifier: workspace:*
+        version: link:../core
+      '@gbc/db':
+        specifier: workspace:*
+        version: link:../db
+    devDependencies:
+      '@types/node':
+        specifier: ^26.6.4
+        version: 26.6.4
 
 packages:
 
