@@ -19,6 +19,9 @@ Prérequis : Node.js 24+, pnpm, (Rust et les outils C++ de Visual Studio pour l'
 ```
 pnpm install
 pnpm check      # lint, formats, en-têtes de licence, types, tests + couverture
+pnpm --filter @gbc/web dev        # version web sur http://localhost:5173
+pnpm --filter @gbc/desktop dev    # application Windows (Tauri), lance aussi la version web
+pnpm --filter @gbc/desktop build  # installeur Windows (apps/desktop/src-tauri/target/release/bundle/nsis)
 ```
 
 ## Licence

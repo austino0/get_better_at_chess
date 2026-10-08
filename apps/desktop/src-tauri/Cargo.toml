@@ -1,0 +1,18 @@
+[package]
+name = "get-better-at-chess"
+version = "0.0.0"
+description = "Get Better at Chess"
+edition = "2021"
+license = "GPL-3.0-or-later"
+publish = false
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+
+[profile.release]
+lto = true
+opt-level = "s"
+strip = true
