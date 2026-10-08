@@ -5,13 +5,15 @@ import { useEffect, useState } from 'react';
 import { loadProfile } from './db/client';
 import { PlayView } from './PlayView';
 import { PuzzleView } from './PuzzleView';
+import { ReviewView } from './ReviewView';
 
 const t = (key: MessageKey) => translate(defaultLocale, key);
 
-type Tab = 'play' | 'tactics';
+type Tab = 'play' | 'tactics' | 'review';
 const TABS: { tab: Tab; label: MessageKey }[] = [
   { tab: 'play', label: 'nav.play' },
   { tab: 'tactics', label: 'nav.tactics' },
+  { tab: 'review', label: 'nav.review' },
 ];
 
 export function App() {
@@ -47,7 +49,9 @@ export function App() {
         ))}
       </nav>
 
-      {tab === 'play' ? <PlayView /> : <PuzzleView />}
+      {tab === 'play' && <PlayView />}
+      {tab === 'tactics' && <PuzzleView />}
+      {tab === 'review' && <ReviewView />}
 
       <footer className="profile">
         {profile === 'error'

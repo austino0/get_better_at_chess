@@ -78,6 +78,23 @@ describe('PuzzleSession', () => {
     expect(session.promote('rook')).toMatchObject({ feedback: 'wrong', status: 'playing' });
   });
 
+  it('distingue résolu proprement, avec indice, et raté', () => {
+    const clean = started(MATE);
+    expect(clean.quality).toBe('clean');
+
+    const hinted = started(MATE);
+    hinted.hint();
+    expect(hinted.quality).toBe('hinted');
+
+    const wrong = started(MATE);
+    wrong.userMove('a1', 'a2');
+    expect(wrong.quality).toBe('failed');
+
+    const revealed = started(MATE);
+    revealed.reveal();
+    expect(revealed.quality).toBe('failed');
+  });
+
   it('ignore promote() sans promotion en attente', () => {
     const session = started(MATE);
     expect(session.promote('queen').status).toBe('playing');

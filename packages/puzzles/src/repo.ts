@@ -1,18 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 import { uuidv7, type Db, type SqlValue } from '@gbc/db';
 import { targetOpponentRating, updateRating, type Rating } from '@gbc/rating';
+import { addCard } from './cards';
 import type { Puzzle } from './puzzle';
+import { COLUMNS, toPuzzle, type PuzzleRow } from './row';
 
-type PuzzleRow = {
-  id: string;
-  fen: string;
-  moves: string;
-  rating: number;
-  rating_deviation: number;
-  themes: string;
-};
-
-const COLUMNS = 'id, fen, moves, rating, rating_deviation, themes';
 // 6 paramètres par ligne : 500 lignes restent très en dessous de la limite de SQLite (32 766).
 const CHUNK = 500;
 
@@ -123,6 +115,7 @@ export async function recordAttemptAndRate(
     if (!player || !puzzle) throw new Error('Niveau de tactique ou problème introuvable');
 
     await recordAttempt(db, attempt);
+    if (!attempt.success) await addCard(db, attempt.puzzleId, new Date());
     const updated = updateRating(player, [
       { rating: puzzle.rating, rd: puzzle.rating_deviation, score: attempt.success ? 1 : 0 },
     ]);
@@ -143,15 +136,4 @@ export async function pickAdaptive(db: Db, player: Rating): Promise<Puzzle | nul
     if (puzzle) return puzzle;
   }
   return null;
-}
-
-function toPuzzle(row: PuzzleRow): Puzzle {
-  return {
-    id: row.id,
-    fen: row.fen,
-    moves: row.moves.split(' '),
-    rating: row.rating,
-    ratingDeviation: row.rating_deviation,
-    themes: row.themes === '' ? [] : row.themes.split(' '),
-  };
 }

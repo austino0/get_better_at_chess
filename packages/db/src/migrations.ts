@@ -50,4 +50,44 @@ export const migrations: readonly Migration[] = [
       ) STRICT;
     `,
   },
+  {
+    version: 4,
+    sql: `
+      -- Cartes de révision espacée (FSRS). ref désigne l'objet à réviser selon type
+      -- (ici l'identifiant d'un problème) ; une seule carte par objet.
+      CREATE TABLE cards (
+        id TEXT PRIMARY KEY NOT NULL,
+        type TEXT NOT NULL,
+        ref TEXT NOT NULL,
+        due TEXT NOT NULL,
+        stability REAL NOT NULL,
+        difficulty REAL NOT NULL,
+        scheduled_days REAL NOT NULL,
+        learning_steps INTEGER NOT NULL,
+        reps INTEGER NOT NULL,
+        lapses INTEGER NOT NULL,
+        state INTEGER NOT NULL,
+        last_review TEXT,
+        created_at TEXT NOT NULL,
+        UNIQUE (type, ref)
+      ) STRICT;
+      CREATE INDEX cards_due ON cards (due);
+
+      -- Journal append-only des révisions : état de la carte AVANT la note, de quoi tout rejouer.
+      CREATE TABLE review_logs (
+        id TEXT PRIMARY KEY NOT NULL,
+        card_id TEXT NOT NULL,
+        rating INTEGER NOT NULL,
+        state INTEGER NOT NULL,
+        due TEXT NOT NULL,
+        stability REAL NOT NULL,
+        difficulty REAL NOT NULL,
+        scheduled_days REAL NOT NULL,
+        learning_steps INTEGER NOT NULL,
+        reviewed_at TEXT NOT NULL,
+        duration_ms INTEGER NOT NULL
+      ) STRICT;
+      CREATE INDEX review_logs_card ON review_logs (card_id);
+    `,
+  },
 ];

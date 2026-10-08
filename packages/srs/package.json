@@ -1,0 +1,14 @@
+{
+  "name": "@gbc/srs",
+  "version": "0.0.0",
+  "private": true,
+  "license": "GPL-3.0-or-later",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "ts-fsrs": "^5.4.2"
+  }
+}

@@ -2,46 +2,35 @@
 import { defaultLocale, translate, type MessageKey } from '@gbc/i18n';
 import {
   pickAdaptive,
-  PuzzleSession,
   readTacticsRating,
   recordAttemptAndRate,
   saveTacticsRating,
   type Puzzle,
-  type PuzzleState,
+  type PuzzleSession,
 } from '@gbc/puzzles';
 import { startingRating, type Rating } from '@gbc/rating';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { loadDb } from './db/client';
-import { PromotionPicker } from './PromotionPicker';
-import { mountPuzzleBoard, type PuzzleBoard } from './puzzles/board';
+import { PuzzlePlayer } from './PuzzlePlayer';
 import { ensurePuzzles } from './puzzles/data';
 
 const t = (key: MessageKey) => translate(defaultLocale, key);
 
 const DEFAULT_ELO = 1000;
 
-function statusKey({ status, feedback, clean, userColor }: PuzzleState): MessageKey {
-  if (status === 'solved') return clean ? 'puzzle.solved' : 'puzzle.solvedWithHelp';
-  if (feedback === 'wrong') return 'puzzle.wrong';
-  if (feedback === 'correct') return 'puzzle.correct';
-  return userColor === 'white' ? 'puzzle.findWhite' : 'puzzle.findBlack';
-}
-
 const signed = (value: number) => `${value >= 0 ? '+' : '−'}${String(Math.abs(Math.round(value)))}`;
 
 /** Entraînement à la tactique : problèmes adaptés au niveau, tentatives enregistrées dans la base locale. */
 export function PuzzleView() {
-  const boardEl = useRef<HTMLDivElement>(null);
-  const board = useRef<PuzzleBoard | null>(null);
   const session = useRef<PuzzleSession | null>(null);
   const startedAt = useRef(0);
   const recorded = useRef(true);
   const player = useRef<Rating | null>(null);
   const [rating, setRating] = useState<Rating | null | 'loading'>('loading');
   const [delta, setDelta] = useState<number | null>(null);
+  const [solved, setSolved] = useState(false);
   const [elo, setElo] = useState(DEFAULT_ELO);
   const [puzzle, setPuzzle] = useState<Puzzle | 'loading' | 'error'>('loading');
-  const [state, setState] = useState<PuzzleState | null>(null);
 
   const applyRating = useCallback((value: Rating) => {
     player.current = value;
@@ -93,23 +82,6 @@ export function PuzzleView() {
     })();
   }, [next]);
 
-  useEffect(() => {
-    if (typeof puzzle === 'string' || !boardEl.current) return;
-    const current = new PuzzleSession(puzzle);
-    session.current = current;
-    recorded.current = false;
-    startedAt.current = performance.now();
-    const mounted = mountPuzzleBoard(boardEl.current, current, (newState) => {
-      setState(newState);
-      if (newState.status === 'solved') void record(newState.clean);
-    });
-    board.current = mounted;
-    return () => {
-      mounted.destroy();
-      board.current = null;
-    };
-  }, [puzzle, record]);
-
   const start = async () => {
     try {
       const initial = startingRating(elo);
@@ -150,38 +122,31 @@ export function PuzzleView() {
     );
   }
 
-  const solved = state?.status === 'solved';
-
   return (
-    <>
-      <div className="board-wrap">
-        <div ref={boardEl} className="board" />
-        {state?.promotionPending && (
-          <PromotionPicker
-            onPick={(role) => {
-              board.current?.promote(role);
-            }}
-          />
-        )}
-      </div>
-
-      <p className="status" role="status">
-        {puzzle === 'loading' || !state ? t('puzzle.loading') : t(statusKey(state))}
-      </p>
-      <p className="eval-text">
-        {t('puzzle.ratingLabel')} : {Math.round(rating.rating)} ± {Math.round(rating.rd)}
-        {delta !== null && ` (${signed(delta)})`}
-        {solved &&
-          typeof puzzle !== 'string' &&
-          ` · ${t('puzzle.level')} : ${String(puzzle.rating)}`}
-      </p>
-      <div className="actions">
-        <button disabled={state?.status !== 'playing'} onClick={() => board.current?.hint()}>
-          {t('puzzle.hint')}
-        </button>
-        <button disabled={state?.status !== 'playing'} onClick={() => board.current?.reveal()}>
-          {t('puzzle.reveal')}
-        </button>
+    <PuzzlePlayer
+      puzzle={puzzle === 'loading' ? null : puzzle}
+      onStart={(started) => {
+        session.current = started;
+        recorded.current = false;
+        startedAt.current = performance.now();
+        setSolved(false);
+      }}
+      onSolved={(finished) => {
+        setSolved(true);
+        record(finished.clean).catch(() => {
+          setPuzzle('error');
+        });
+      }}
+      info={
+        <p className="eval-text">
+          {t('puzzle.ratingLabel')} : {Math.round(rating.rating)} ± {Math.round(rating.rd)}
+          {delta !== null && ` (${signed(delta)})`}
+          {solved &&
+            typeof puzzle !== 'string' &&
+            ` · ${t('puzzle.level')} : ${String(puzzle.rating)}`}
+        </p>
+      }
+      actions={
         <button
           onClick={() => {
             void next();
@@ -189,7 +154,7 @@ export function PuzzleView() {
         >
           {t('puzzle.next')}
         </button>
-      </div>
-    </>
+      }
+    />
   );
 }

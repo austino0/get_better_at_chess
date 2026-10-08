@@ -53,5 +53,13 @@
     "intakeHelp": "Enter your approximate rating (Lichess, Chess.com or FIDE). Puzzles will then adapt to your results.",
     "intakeStart": "Start",
     "ratingLabel": "Tactics level"
+  },
+  "review": {
+    "empty": "Nothing to review right now. Puzzles you miss come back here at the right time.",
+    "remaining": "To review",
+    "comesBack": "Will come back in",
+    "day": "day",
+    "days": "days",
+    "next": "Next card"
   }
 }

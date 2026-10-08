@@ -53,5 +53,13 @@
     "intakeHelp": "Indique ton Elo approximatif (Lichess, Chess.com ou FIDE). Les problèmes s’adapteront ensuite à tes résultats.",
     "intakeStart": "Commencer",
     "ratingLabel": "Niveau de tactique"
+  },
+  "review": {
+    "empty": "Rien à réviser pour l’instant. Les problèmes que tu rates reviennent ici au bon moment.",
+    "remaining": "À réviser",
+    "comesBack": "Reviendra dans",
+    "day": "jour",
+    "days": "jours",
+    "next": "Carte suivante"
   }
 }

@@ -11,7 +11,8 @@
   "dependencies": {
     "@gbc/core": "workspace:*",
     "@gbc/db": "workspace:*",
-    "@gbc/rating": "workspace:*"
+    "@gbc/rating": "workspace:*",
+    "@gbc/srs": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^26.6.4"

@@ -47,15 +47,22 @@ export class PuzzleSession {
   private pending: { from: SquareName; to: SquareName } | null = null;
   private feedback: PuzzleState['feedback'] = null;
   private mistakes = 0;
-  private helped = false;
+  private hinted = false;
+  private revealed = false;
 
   constructor(readonly puzzle: Puzzle) {
     this.game = Game.fromFen(puzzle.fen);
   }
 
+  /** `clean` : aucune erreur ni aide ; `hinted` : un indice seulement ; `failed` : erreur ou solution montrée. */
+  get quality(): 'clean' | 'hinted' | 'failed' {
+    if (this.mistakes > 0 || this.revealed) return 'failed';
+    return this.hinted ? 'hinted' : 'clean';
+  }
+
   /** Vrai si le problème a été résolu sans erreur ni aide. */
   get clean(): boolean {
-    return this.mistakes === 0 && !this.helped;
+    return this.quality === 'clean';
   }
 
   get state(): PuzzleState {
@@ -114,14 +121,14 @@ export class PuzzleSession {
   /** Case de la pièce à jouer. Compte comme une aide. */
   hint(): SquareName | null {
     if (this.state.status !== 'playing') return null;
-    this.helped = true;
+    this.hinted = true;
     return this.expected.slice(0, 2) as SquareName;
   }
 
   /** Joue le coup attendu à la place de l'utilisateur. Compte comme une aide. */
   reveal(): PuzzleState {
     if (this.state.status === 'playing') {
-      this.helped = true;
+      this.revealed = true;
       this.pending = null;
       this.playExpected();
       this.feedback = 'correct';
