@@ -2,9 +2,16 @@
 import { Chess } from 'chessops/chess';
 import { chessgroundDests } from 'chessops/compat';
 import { INITIAL_FEN, makeFen, parseFen } from 'chessops/fen';
-import { makeSanAndPlay } from 'chessops/san';
+import { makeSan, makeSanAndPlay } from 'chessops/san';
 import type { Color, Square, SquareName } from 'chessops/types';
-import { makeUci, parseSquare, squareFile, squareFromCoords, squareRank } from 'chessops/util';
+import {
+  makeUci,
+  parseSquare,
+  parseUci,
+  squareFile,
+  squareFromCoords,
+  squareRank,
+} from 'chessops/util';
 
 export type { Color, SquareName };
 export type PromotionRole = 'queen' | 'rook' | 'bishop' | 'knight';
@@ -63,6 +70,12 @@ export class Game {
     if (!this.position.isLegal(move)) return null;
     const san = makeSanAndPlay(this.position, move);
     return { san, uci: makeUci(move), fen: this.fen };
+  }
+
+  /** Notation algébrique d'un coup UCI sans le jouer ; `null` si le coup est illégal ou mal formé. */
+  sanOf(uci: string): string | null {
+    const move = parseUci(uci);
+    return move && this.position.isLegal(move) ? makeSan(this.position, move) : null;
   }
 
   outcome(): Outcome | null {

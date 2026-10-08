@@ -36,6 +36,7 @@ assertion retirée) est refusé en relecture.
   peuvent que baisser :
   - application (chargée au démarrage) : **120 Ko gzip maximum** ;
   - Worker SQLite (chargé à part, avec son fichier `.wasm` de ~400 Ko non compté ici) : **150 Ko gzip maximum**.
+  - Stockfish (`public/stockfish`, ~1,8 Mo, code tiers) : hors budget ; chargé seulement quand l'utilisateur active l'évaluation.
 
 ## Données personnelles
 

@@ -71,4 +71,18 @@ describe('Game', () => {
     const game = Game.fromFen('4k3/8/8/8/8/8/8/4K3 w - - 0 1');
     expect(game.move('e1', 'g1')).toBeNull();
   });
+
+  it('convertit un coup UCI en notation algébrique sans jouer le coup', () => {
+    const game = Game.fromFen();
+    const before = game.fen;
+    expect(game.sanOf('g1f3')).toBe('Nf3');
+    expect(game.fen).toBe(before);
+  });
+
+  it('écrit le roque UCI (roi de deux cases) en O-O et refuse un coup illégal ou mal formé', () => {
+    const game = Game.fromFen('4k3/8/8/8/8/8/8/4K2R w K - 0 1');
+    expect(game.sanOf('e1g1')).toBe('O-O');
+    expect(game.sanOf('e1e5')).toBeNull();
+    expect(game.sanOf('pas un coup')).toBeNull();
+  });
 });

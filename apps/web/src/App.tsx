@@ -1,10 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 import type { PromotionRole, SessionState } from '@gbc/core';
 import type { Profile } from '@gbc/db';
+import type { Evaluation } from '@gbc/engine';
 import { defaultLocale, translate, type MessageKey } from '@gbc/i18n';
 import { useEffect, useRef, useState } from 'react';
 import { mountBoard, type BoardController } from './board';
 import { loadProfile } from './db/client';
+import { getEngine } from './engine/stockfish';
+import { EvalBar } from './EvalBar';
 
 const locale = defaultLocale;
 const t = (key: MessageKey) => translate(locale, key);
@@ -40,6 +43,23 @@ export function App() {
       });
   }, []);
 
+  const [live, setLive] = useState(false);
+  const [evaluation, setEvaluation] = useState<Evaluation | 'error' | null>(null);
+  const fen = state?.fen;
+  const gameOver = state?.outcome != null;
+
+  useEffect(() => {
+    setEvaluation(null);
+    if (!live || !fen || gameOver) return;
+    const engine = getEngine();
+    engine.analyse(fen, setEvaluation).catch(() => {
+      setEvaluation('error');
+    });
+    return () => {
+      engine.stop();
+    };
+  }, [live, fen, gameOver]);
+
   useEffect(() => {
     if (!boardEl.current) return;
     const board = mountBoard(boardEl.current, setState);
@@ -74,9 +94,20 @@ export function App() {
       <p className="status" role="status">
         {state ? t(statusKey(state)) : ''}
       </p>
+      {live && fen && !gameOver && <EvalBar fen={fen} evaluation={evaluation} />}
       <div className="actions">
         <button onClick={() => controller.current?.newGame()}>{t('board.newGame')}</button>
         <button onClick={() => controller.current?.flip()}>{t('board.flip')}</button>
+        <label>
+          <input
+            type="checkbox"
+            checked={live}
+            onChange={(e) => {
+              setLive(e.target.checked);
+            }}
+          />{' '}
+          {t('analysis.live')}
+        </label>
       </div>
       <footer className="profile">
         {profile === 'error'

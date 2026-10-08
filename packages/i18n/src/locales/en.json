@@ -27,5 +27,12 @@
     "rook": "Rook",
     "bishop": "Bishop",
     "knight": "Knight"
+  },
+  "analysis": {
+    "live": "Live evaluation",
+    "loading": "Engine is thinking…",
+    "error": "Analysis engine unavailable",
+    "depth": "depth",
+    "best": "best move"
   }
 }

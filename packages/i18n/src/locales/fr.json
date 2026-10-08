@@ -27,5 +27,12 @@
     "rook": "Tour",
     "bishop": "Fou",
     "knight": "Cavalier"
+  },
+  "analysis": {
+    "live": "Évaluation en direct",
+    "loading": "Le moteur calcule…",
+    "error": "Moteur d'analyse indisponible",
+    "depth": "profondeur",
+    "best": "meilleur coup"
   }
 }

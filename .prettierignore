@@ -3,3 +3,4 @@ pnpm-lock.yaml
 coverage
 dist
 CLAUDE.md
+apps/web/public/stockfish

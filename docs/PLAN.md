@@ -490,7 +490,7 @@ Les tailles : S ≈ 1–2 sem., M ≈ 3–5 sem., L ≈ 6–10 sem. (1 développ
 
 ---
 
-## 15. Prochaines actions concrètes (1, 2 et 4 faites en livraisons 1 et 2 ; 3 : `core` fait, `db` reste)
+## 15. Prochaines actions concrètes (1 à 4 faites en livraisons 1 à 3 ; 6 : spike Stockfish fait en livraison 4)
 
 1. Valider/ajuster la section 14 et rédiger ADR-001 (licence) et ADR-002 (stack).
 2. Initialiser le monorepo pnpm + Turborepo, TypeScript strict, ESLint/Prettier, Vitest, CI GitHub Actions.

@@ -6,7 +6,7 @@ import process from 'node:process';
 
 const ROOTS = ['packages', 'apps', 'scripts'];
 const EXT = /\.(ts|tsx|js|mjs|rs)$/;
-const SKIP = new Set(['node_modules', 'dist', 'coverage', 'target']);
+const SKIP = new Set(['node_modules', 'dist', 'coverage', 'target', 'stockfish']);
 const HEADER = 'SPDX-License-Identifier: GPL-3.0-or-later';
 
 function* walk(dir) {
