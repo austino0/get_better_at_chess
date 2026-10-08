@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-import type { PromotionRole } from '@gbc/core';
+import type { PromotionRole, SessionState } from '@gbc/core';
 import { defaultLocale, translate, type MessageKey } from '@gbc/i18n';
 import { useEffect, useRef, useState } from 'react';
-import { mountBoard, type BoardController, type BoardState } from './board';
+import { mountBoard, type BoardController } from './board';
 
 const locale = defaultLocale;
 const t = (key: MessageKey) => translate(locale, key);
@@ -14,7 +14,7 @@ const PROMOTIONS: { role: PromotionRole; label: MessageKey; glyph: string }[] = 
   { role: 'knight', label: 'board.knight', glyph: '♞' },
 ];
 
-function statusKey({ outcome, check, turn }: BoardState): MessageKey {
+function statusKey({ outcome, check, turn }: SessionState): MessageKey {
   if (outcome?.kind === 'checkmate') {
     return outcome.winner === 'white' ? 'board.checkmateWhite' : 'board.checkmateBlack';
   }
@@ -27,7 +27,7 @@ function statusKey({ outcome, check, turn }: BoardState): MessageKey {
 export function App() {
   const boardEl = useRef<HTMLDivElement>(null);
   const controller = useRef<BoardController | null>(null);
-  const [state, setState] = useState<BoardState | null>(null);
+  const [state, setState] = useState<SessionState | null>(null);
 
   useEffect(() => {
     if (!boardEl.current) return;

@@ -32,8 +32,8 @@ assertion retirée) est refusé en relecture.
 ## Performance (budgets, mesurés dès que l'application existe)
 
 - Démarrage de l'application < 2 s ; premier problème affiché < 300 ms.
-- Les limites de taille de bundle seront fixées à la première version de l'interface, puis ne
-  pourront que baisser.
+- JavaScript du build web : **120 Ko gzip maximum** (mesuré : ~87 Ko). Vérifié par
+  `pnpm check:bundle`, qui tourne dans la CI. La limite ne peut que baisser.
 
 ## Données personnelles
 
