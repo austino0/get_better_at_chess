@@ -1,0 +1,13 @@
+{
+  "app": {
+    "name": "Get Better at Chess",
+    "tagline": "Improve at chess through your own games."
+  },
+  "nav": {
+    "home": "Home",
+    "tactics": "Tactics",
+    "review": "Review",
+    "games": "Games",
+    "settings": "Settings"
+  }
+}

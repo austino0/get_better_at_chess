@@ -1,0 +1,13 @@
+{
+  "app": {
+    "name": "Get Better at Chess",
+    "tagline": "Progresse aux échecs grâce à tes propres parties."
+  },
+  "nav": {
+    "home": "Accueil",
+    "tactics": "Tactique",
+    "review": "Révisions",
+    "games": "Parties",
+    "settings": "Réglages"
+  }
+}
