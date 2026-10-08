@@ -41,6 +41,11 @@ body {
   height: min(92vw, 70vh, 640px);
 }
 
+.profile {
+  font-size: 0.8rem;
+  opacity: 0.6;
+}
+
 .status {
   margin: 0;
   font-weight: 600;

@@ -1,7 +1,9 @@
 {
   "app": {
     "name": "Get Better at Chess",
-    "tagline": "Improve at chess through your own games."
+    "tagline": "Improve at chess through your own games.",
+    "profileLabel": "Local profile",
+    "dbError": "Local storage unavailable"
   },
   "nav": {
     "home": "Home",

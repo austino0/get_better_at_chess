@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 import type { PromotionRole, SessionState } from '@gbc/core';
+import type { Profile } from '@gbc/db';
 import { defaultLocale, translate, type MessageKey } from '@gbc/i18n';
 import { useEffect, useRef, useState } from 'react';
 import { mountBoard, type BoardController } from './board';
+import { loadProfile } from './db/client';
 
 const locale = defaultLocale;
 const t = (key: MessageKey) => translate(locale, key);
@@ -28,6 +30,15 @@ export function App() {
   const boardEl = useRef<HTMLDivElement>(null);
   const controller = useRef<BoardController | null>(null);
   const [state, setState] = useState<SessionState | null>(null);
+  const [profile, setProfile] = useState<Profile | 'error' | null>(null);
+
+  useEffect(() => {
+    loadProfile()
+      .then(setProfile)
+      .catch(() => {
+        setProfile('error');
+      });
+  }, []);
 
   useEffect(() => {
     if (!boardEl.current) return;
@@ -67,6 +78,11 @@ export function App() {
         <button onClick={() => controller.current?.newGame()}>{t('board.newGame')}</button>
         <button onClick={() => controller.current?.flip()}>{t('board.flip')}</button>
       </div>
+      <footer className="profile">
+        {profile === 'error'
+          ? t('app.dbError')
+          : profile && `${t('app.profileLabel')} · ${profile.id.slice(0, 8)}`}
+      </footer>
     </main>
   );
 }

@@ -32,8 +32,10 @@ assertion retirée) est refusé en relecture.
 ## Performance (budgets, mesurés dès que l'application existe)
 
 - Démarrage de l'application < 2 s ; premier problème affiché < 300 ms.
-- JavaScript du build web : **120 Ko gzip maximum** (mesuré : ~87 Ko). Vérifié par
-  `pnpm check:bundle`, qui tourne dans la CI. La limite ne peut que baisser.
+- JavaScript du build web, vérifié par `pnpm check:bundle` (qui tourne dans la CI) ; les limites ne
+  peuvent que baisser :
+  - application (chargée au démarrage) : **120 Ko gzip maximum** ;
+  - Worker SQLite (chargé à part, avec son fichier `.wasm` de ~400 Ko non compté ici) : **150 Ko gzip maximum**.
 
 ## Données personnelles
 

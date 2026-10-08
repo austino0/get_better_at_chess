@@ -1,7 +1,9 @@
 {
   "app": {
     "name": "Get Better at Chess",
-    "tagline": "Progresse aux échecs grâce à tes propres parties."
+    "tagline": "Progresse aux échecs grâce à tes propres parties.",
+    "profileLabel": "Profil local",
+    "dbError": "Stockage local indisponible"
   },
   "nav": {
     "home": "Accueil",
