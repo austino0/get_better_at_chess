@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 import { uuidv7, type Db, type SqlValue } from '@gbc/db';
+import { targetOpponentRating, updateRating, type Rating } from '@gbc/rating';
 import type { Puzzle } from './puzzle';
 
 type PuzzleRow = {
@@ -79,6 +80,69 @@ export async function recordAttempt(
       new Date().toISOString(),
     ],
   );
+}
+
+const DIMENSION = 'tactics';
+// Demi-largeurs successives de la tranche de niveau autour de la cible, si elle est vide.
+const WIDENING = [100, 200, 400, 800, 3000];
+
+/** Note de tactique de l'utilisateur ; `null` tant qu'il n'a pas déclaré son niveau. */
+export async function readTacticsRating(db: Db): Promise<Rating | null> {
+  const [row] = await db.all<{ rating: number; rd: number; volatility: number }>(
+    'SELECT rating, rd, volatility FROM skill_ratings WHERE dimension = ?',
+    [DIMENSION],
+  );
+  return row ? { rating: row.rating, rd: row.rd, volatility: row.volatility } : null;
+}
+
+export async function saveTacticsRating(db: Db, rating: Rating): Promise<void> {
+  await db.run(
+    `INSERT INTO skill_ratings (dimension, rating, rd, volatility, updated_at) VALUES (?, ?, ?, ?, ?)
+     ON CONFLICT (dimension) DO UPDATE SET
+       rating = excluded.rating, rd = excluded.rd,
+       volatility = excluded.volatility, updated_at = excluded.updated_at`,
+    [DIMENSION, rating.rating, rating.rd, rating.volatility, new Date().toISOString()],
+  );
+}
+
+/**
+ * Enregistre une tentative et met à jour la note (Glicko-2, le problème étant l'adversaire), en une
+ * transaction. Renvoie la nouvelle note.
+ */
+export async function recordAttemptAndRate(
+  db: Db,
+  attempt: { puzzleId: string; success: boolean; durationMs: number },
+): Promise<Rating> {
+  await db.run('BEGIN');
+  try {
+    const player = await readTacticsRating(db);
+    const [puzzle] = await db.all<{ rating: number; rating_deviation: number }>(
+      'SELECT rating, rating_deviation FROM puzzles WHERE id = ?',
+      [attempt.puzzleId],
+    );
+    if (!player || !puzzle) throw new Error('Niveau de tactique ou problème introuvable');
+
+    await recordAttempt(db, attempt);
+    const updated = updateRating(player, [
+      { rating: puzzle.rating, rd: puzzle.rating_deviation, score: attempt.success ? 1 : 0 },
+    ]);
+    await saveTacticsRating(db, updated);
+    await db.run('COMMIT');
+    return updated;
+  } catch (error) {
+    await db.run('ROLLBACK');
+    throw error;
+  }
+}
+
+/** Prochain problème adapté : celui que l'utilisateur devrait réussir environ 82 % du temps. */
+export async function pickAdaptive(db: Db, player: Rating): Promise<Puzzle | null> {
+  const target = targetOpponentRating(player);
+  for (const half of WIDENING) {
+    const puzzle = await pickPuzzle(db, target - half, target + half);
+    if (puzzle) return puzzle;
+  }
+  return null;
 }
 
 function toPuzzle(row: PuzzleRow): Puzzle {

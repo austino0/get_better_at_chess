@@ -48,6 +48,10 @@
     "hint": "Indice",
     "reveal": "Voir la solution",
     "next": "Problème suivant",
-    "level": "Niveau du problème"
+    "level": "Niveau du problème",
+    "intakeTitle": "Quel est ton niveau aux échecs ?",
+    "intakeHelp": "Indique ton Elo approximatif (Lichess, Chess.com ou FIDE). Les problèmes s’adapteront ensuite à tes résultats.",
+    "intakeStart": "Commencer",
+    "ratingLabel": "Niveau de tactique"
   }
 }

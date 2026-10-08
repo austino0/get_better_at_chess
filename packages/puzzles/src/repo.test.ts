@@ -3,7 +3,17 @@ import { migrate, migrations } from '@gbc/db';
 import { openNodeDb } from '@gbc/db/src/node-sqlite';
 import { describe, expect, it } from 'vitest';
 import type { Puzzle } from './puzzle';
-import { countPuzzles, insertPuzzles, pickPuzzle, recordAttempt } from './repo';
+import { startingRating } from '@gbc/rating';
+import {
+  countPuzzles,
+  insertPuzzles,
+  pickAdaptive,
+  pickPuzzle,
+  readTacticsRating,
+  recordAttempt,
+  recordAttemptAndRate,
+  saveTacticsRating,
+} from './repo';
 
 const make = (id: string, rating: number, themes: string[] = ['mate']): Puzzle => ({
   id,
@@ -72,5 +82,68 @@ describe('dépôt de problèmes', () => {
     expect(row?.id).toMatch(
       /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/,
     );
+  });
+});
+
+describe('note de tactique', () => {
+  it('est absente au départ, puis enregistrée et remplacée', async () => {
+    const db = await freshDb();
+    expect(await readTacticsRating(db)).toBeNull();
+    await saveTacticsRating(db, startingRating(1000));
+    expect(await readTacticsRating(db)).toEqual(startingRating(1000));
+    await saveTacticsRating(db, { rating: 1100, rd: 200, volatility: 0.05 });
+    expect(await readTacticsRating(db)).toEqual({ rating: 1100, rd: 200, volatility: 0.05 });
+  });
+
+  it('monte après une réussite et baisse après un échec, avec la tentative au journal', async () => {
+    const db = await freshDb();
+    await insertPuzzles(db, [make('a', 1000), make('b', 1000)]);
+    await saveTacticsRating(db, startingRating(1000));
+
+    const won = await recordAttemptAndRate(db, { puzzleId: 'a', success: true, durationMs: 3000 });
+    expect(won.rating).toBeGreaterThan(1000);
+    expect(await readTacticsRating(db)).toEqual(won);
+
+    const lost = await recordAttemptAndRate(db, {
+      puzzleId: 'b',
+      success: false,
+      durationMs: 9000,
+    });
+    expect(lost.rating).toBeLessThan(won.rating);
+    const attempts = await db.all<{ success: number }>(
+      'SELECT success FROM puzzle_attempts ORDER BY created_at, id',
+    );
+    expect(attempts.map((a) => a.success).sort()).toEqual([0, 1]);
+  });
+
+  it('ne change rien si le niveau n’est pas déclaré ou si le problème est inconnu', async () => {
+    const db = await freshDb();
+    await insertPuzzles(db, [make('a', 1000)]);
+    const attempt = { puzzleId: 'a', success: true, durationMs: 1 };
+    await expect(recordAttemptAndRate(db, attempt)).rejects.toThrow(/introuvable/);
+
+    await saveTacticsRating(db, startingRating(1000));
+    await expect(recordAttemptAndRate(db, { ...attempt, puzzleId: 'zzz' })).rejects.toThrow();
+    expect(await db.all('SELECT * FROM puzzle_attempts')).toHaveLength(0);
+    expect(await readTacticsRating(db)).toEqual(startingRating(1000));
+  });
+});
+
+describe('problème adapté', () => {
+  it('vise un problème plus facile que le niveau du joueur', async () => {
+    const db = await freshDb();
+    // Pour 1500, la cible est 1237 : le problème à 1250 est choisi, pas celui à 1500.
+    await insertPuzzles(db, [make('facile', 1250), make('egal', 1500)]);
+    expect((await pickAdaptive(db, { rating: 1500, rd: 100, volatility: 0.06 }))?.id).toBe(
+      'facile',
+    );
+  });
+
+  it('élargit la recherche quand rien ne se trouve près de la cible, et renvoie null si la base est vide', async () => {
+    const db = await freshDb();
+    const player = { rating: 1500, rd: 100, volatility: 0.06 };
+    expect(await pickAdaptive(db, player)).toBeNull();
+    await insertPuzzles(db, [make('loin', 2300)]);
+    expect((await pickAdaptive(db, player))?.id).toBe('loin');
   });
 });

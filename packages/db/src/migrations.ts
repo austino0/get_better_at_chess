@@ -37,4 +37,17 @@ export const migrations: readonly Migration[] = [
       CREATE INDEX puzzle_attempts_puzzle ON puzzle_attempts (puzzle_id);
     `,
   },
+  {
+    version: 3,
+    sql: `
+      -- État courant d'une note (Glicko-2) par dimension, ex. 'tactics'. Dérivé du journal des tentatives.
+      CREATE TABLE skill_ratings (
+        dimension TEXT PRIMARY KEY NOT NULL,
+        rating REAL NOT NULL,
+        rd REAL NOT NULL,
+        volatility REAL NOT NULL,
+        updated_at TEXT NOT NULL
+      ) STRICT;
+    `,
+  },
 ];

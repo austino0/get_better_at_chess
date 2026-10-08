@@ -211,6 +211,9 @@ importers:
       '@gbc/puzzles':
         specifier: workspace:*
         version: link:../../packages/puzzles
+      '@gbc/rating':
+        specifier: workspace:*
+        version: link:../../packages/rating
       '@lichess-org/chessground':
         specifier: ^10.4.2
         version: 10.4.2
@@ -261,10 +264,15 @@ importers:
       '@gbc/db':
         specifier: workspace:*
         version: link:../db
+      '@gbc/rating':
+        specifier: workspace:*
+        version: link:../rating
     devDependencies:
       '@types/node':
         specifier: ^26.6.4
         version: 26.6.4
+
+  packages/rating: {}
 
 packages:
 

@@ -48,6 +48,10 @@
     "hint": "Hint",
     "reveal": "Show solution",
     "next": "Next puzzle",
-    "level": "Puzzle level"
+    "level": "Puzzle level",
+    "intakeTitle": "What is your chess level?",
+    "intakeHelp": "Enter your approximate rating (Lichess, Chess.com or FIDE). Puzzles will then adapt to your results.",
+    "intakeStart": "Start",
+    "ratingLabel": "Tactics level"
   }
 }
